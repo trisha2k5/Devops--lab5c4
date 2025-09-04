@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/trisha2k5/Devops--lab5c4.git'
+            }
+        }
+        stage('deploy') {
+            steps {
+                sh '''
+                mkdir -p deployed_html
+                cp *.html deployed_html/
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'deployed_html',
+                reportFiles: 'registration.html',
+                reportName: 'HTML Report'
+            ])
+        }
+    }
+}
